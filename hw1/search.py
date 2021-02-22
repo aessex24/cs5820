@@ -38,16 +38,16 @@ def dfs(initial, goal, expander):
 
         visited.add(node.state)
 
-        print(len(stack))
+        # print(len(stack))
   
         for child in reversed(expander(node)):
-            if child.state not in visited and child not in stack:
+            if child.state not in visited:
                 stack.append(child)
     return failure
 
 ''' implementation fo iterative deepening search '''
 def ids(initial, goal, expander):
-    limit = 10
+    limit = 12
     depth = 0
     result = None
 
@@ -65,7 +65,7 @@ def depth_limited(initial, goal, expander, depth):
     queue.put(initial)
     
     while True:
-        print(depth, queue.qsize())
+        #print(depth, queue.qsize())
         if queue.empty():
             return None
         current = queue.get()

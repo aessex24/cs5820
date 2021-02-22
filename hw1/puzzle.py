@@ -13,25 +13,36 @@ class N_Puzzle:
       self.goal_state = list(range(1, self.total_size))
       self.goal_state.append(0)
       self.goal_state = tuple(self.goal_state)
+      self.possible_moves = [1, -1, self.n_size, -self.n_size] # right, left, up, and down
+
     
 
     '''
         Function returns possible legal moves for each tile position
-        credit: http://www.learntosolveit.com/python/algorithm_npuzzle.html
     '''
     def get_moves(self, tile):
-        # right, left, up, and down
-        possible_moves = [1, -1, self.n_size, -self.n_size]
-        valid_moves = list()
+        all_moves = [ self.get_move(tile, move) for move in self.possible_moves ]
+        return [ x for x in all_moves if x is not None ]
+        
+        # values = [1, -1, self.n_size, -self.n_size]
+        # valid = []
+        # for x in values:
+        #     if 0 <= tile + x < self.total_size:
+        #         if x == 1 and tile in range(self.n_size - 1, self.total_size, 
+        #                 self.n_size):
+        #             continue
+        #         if x == -1 and tile in range(0, self.total_size, self.n_size):
+        #             continue
+        #         valid.append(x)
+        # return valid 
 
-        for x in possible_moves:
-            if 0 <= tile + x < self.total_size:
-                if x == 1 and tile in range(self.n_size - 1, self.total_size, self.n_size):
-                    continue
-                if x == -1 and tile in range(0, self.total_size, self.n_size):
-                    continue
-                valid_moves.append(x)
-        return valid_moves
+    def get_move(self, tile, move):
+        if 0 <= tile + move < self.total_size:
+            if move == 1 and tile in range(self.n_size - 1, self.total_size, self.n_size):
+                return None
+            if move == -1 and tile in range(0, self.total_size, self.n_size):
+                return None
+            return move
 
     ''' Computes succession of states from previous state '''
     def compute_successors(self, node):
@@ -65,6 +76,7 @@ class N_Puzzle:
         expanded_states_dict = { key:self.get_moves(key) for key in range(self.total_size) } 
 
         pos = self.get_blank_tile(curr_state)
+
         moves = expanded_states_dict[pos]
         
         return [ self.move_tile(curr_state, mv, pos) for mv in moves ]

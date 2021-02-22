@@ -4,14 +4,15 @@ import argparse
 from puzzle import N_Puzzle
 from search import bfs, dfs, ids, bd
 
-nsize = 4
+nsize = 5
 tsize = pow(nsize, 2)
 
-function_map = {
+search_dictionary = {
   'bfs': bfs,
   'dfs': dfs,
   'ids': ids,
-  'bd': bd
+  'bd': bd,
+  'all': None
 }
 
 def print_state(node):
@@ -23,6 +24,38 @@ def print_state(node):
             print() 
     print() 
 
+def compare_searches(initial_state, is_goal, goal_state, expander):
+
+  # time bfs
+  start_bfs = timeit.default_timer()
+  bfs_frontier = bfs(initial_state, is_goal, expander)
+  stop_bfs = timeit.default_timer()
+
+  # time dfs
+  start_dfs = timeit.default_timer()
+  dfs_frontier = dfs(initial_state, is_goal, expander)
+  stop_dfs = timeit.default_timer()
+
+  # time ids
+  start_ids = timeit.default_timer()
+  ids_frontier = ids(initial_state, is_goal, expander)
+  stop_ids = timeit.default_timer()
+  
+  # time bd
+  start_bd = timeit.default_timer()
+  bd_frontier = bd(initial_state, goal_state, expander)
+  stop_bd = timeit.default_timer()
+
+  print(f'\nTime Taken')
+  print(10 * '-')
+  print(f'Breadth first: {stop_bfs-start_bfs}', bfs_frontier)
+  print(f'Depth first: {stop_dfs-start_dfs}', dfs_frontier)
+  print(f'iterative deepening: {stop_ids-start_ids}', ids_frontier)
+  print(f'Bidirectional: {stop_bd-start_bd}', bd_frontier)
+
+
+
+
 def main():
 
   # parse cli arguments
@@ -31,7 +64,7 @@ def main():
   args = parser.parse_args()
 
   #select search function
-  search_function = function_map[args.algorithm]
+  search_function = search_dictionary[args.algorithm]
 
   # Initialize puzzle
   print('N-Puzzle Solver!')
@@ -48,6 +81,11 @@ def main():
   print('The Goal State is be:')
   print_state(goal_state.state)
 
+
+
+  if(args.algorithm == 'all'):
+    compare_searches(initial_state, puzzle.is_goal, goal_state, puzzle.compute_successors)
+    return
 
   start = timeit.default_timer()
 
