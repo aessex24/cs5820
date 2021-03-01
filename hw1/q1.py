@@ -16,8 +16,6 @@ search_dictionary = {
 }
 
 def print_state(node):
-    """Print the list in a Matrix Format."""
-
     for (index, value) in enumerate(node):
         print(' %s ' % value, end=' ') 
         if index in [x for x in range(nsize - 1, tsize, nsize)]:
